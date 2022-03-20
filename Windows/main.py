@@ -7,7 +7,10 @@ from requests import post
 from os import system
 from telethon import TelegramClient, events
 from tqdm import tqdm as progress
+from time import sleep,time
+from telethon.errors.rpcerrorlist import FloodWaitError
 C = Fore
+init()
 system('cls')
 bb =f'''{C.YELLOW}
 $$$$$$$   $$$$$$$    $$$$$$ 
@@ -19,6 +22,7 @@ $$    $$  $$    $$  $$    $$
 $$$$$$$   $$$$$$$    $$$$$$  
 {C.LIGHTYELLOW_EX}by https://lolz.guru/members/2977610/                       
 '''
+
 #удалил - гей
 print(bb)
 chars = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
@@ -32,11 +36,10 @@ class bbg():
                 self.logs_bot_token = config['logs_bot_token']
                 self.logs_user = config['logs_user']
                 self.limit_gen = config['limit_gen']
-                self.nm = 0
                 print(C.LIGHTGREEN_EX+'Config loaded.')
-                for i in config:
-                    print(C.LIGHTMAGENTA_EX+i,C.RED+'-'+C.MAGENTA,config[i])
+                for i in config:print(C.LIGHTMAGENTA_EX+i,C.RED+'-'+C.MAGENTA,config[i])
         except Exception as e:
+            self._log_("Exception as read config.json\n"+str(e))
             print(C.RED+"Exception as read config.json --",e)
             sys.exit(0)
         asyncio.get_event_loop().run_until_complete(self.launch())
@@ -44,36 +47,49 @@ class bbg():
     def _log_(self,message):
                 post(
                         url='https://api.telegram.org/bot{0}/{1}'.format(self.logs_bot_token, 'sendMessage'),
-                                        data={'chat_id': int(self.logs_user), 'text': '[BBG]\n'+message}
+                                        data={'chat_id': int(self.logs_user), 'text': '<a href="https://lolz.guru/threads/3656270">[BBG]</a>\n<i>'+message+'</i>','parse_mode': 'html'}
                     )    
     async def connect_to_account(self):
-        self.client = TelegramClient(f'bbg_{str(self.api_id)}',self.api_id,self.api_hash)
-        await self.client.start()
-        self.loop = self.client.loop
+        try:
+            self.client = TelegramClient(f'bbg_{str(self.api_id)}',self.api_id,self.api_hash)
+            await self.client.start()
+            self.loop = self.client.loop
+            self._log_("Successful connection to account!")
+        except Exception as e:
+            self._log_("Exception as connect to account\n"+str(e))
+            print(C.RED+'Program exit with 30 seconds.')
+            sleep(30)
+            sys.exit(0)
     
     async def launch(self):
         await self.connect_to_account()
-        self._log_('Started.')
+        self._log_('Started generate.')
         @self.client.on(events.NewMessage)
         async def on_message(event):
-            message = event.message.message
-            id = event.original_update.message.peer_id.user_id
-            if int(id) == 159405177:
-                    if 'вы получили' in message.lower():self._log_(message)
-                    self.nm+=1
+            try:
+                message = event.message.message
+                id = event.original_update.message.peer_id.user_id
+                if int(id) == 159405177:
+                        if 'вы получили' in message.lower() or 'you have received' in message.lower():self._log_(message)
+            except:pass
         for i in progress(range(self.limit_gen),colour='green'):
-            await self.check()
-
+                start  = time()
+                await self.check()
+                stop = time()
+                if (stop-start) < 1.1: sleep(1.1-(stop-start))
     def generate(self):
         token = ''
         for i in range(32):token += choice(chars)
         return token 
-    async def send_log(self,message):
-        await self.client.send_message(self.log,message)
-    async def check(self):
-        await self.client.send_message('BTC_CHANGE_BOT','/start c_'+self.generate())
 
+
+    async def check(self):
+        try:
+            await self.client.send_message('BTC_CHANGE_BOT','/start c_'+self.generate())
+        except FloodWaitError as e:self._log_('Timeout, flood error\n'+str(e));sleep(int(str(e).replace('A wait of ','').replace('seconds is required (caused by SendMessageRequest)','')))
+        except Exception as e:self._log_('Exception as send message to @BTC_CHANGE_BOT\n'+str(e))
 
 bbg()
-print(C.RED+'End.')
+print(C.RED+'Program exit with 30 seconds.')
+sleep(30)
 sys.exit(0)
