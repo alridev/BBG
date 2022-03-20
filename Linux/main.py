@@ -32,7 +32,8 @@ class bbg():
             with open('config.json','r+',encoding='utf-8') as config:
                 config = dict(loads(config.read()))
                 self.accounts = []
-                with open(config['accounts'],'r+',encoding='utf-8') as accounts:
+
+                with open(os.path.abspath(os.path.join(config['accounts'])),'r+',encoding='utf-8') as accounts:
                     for account in accounts.readlines():
                         self.accounts.append(account.replace('\n','').split(':'))
                 self.logs_bot_token = config['logs_bot_token']
@@ -43,7 +44,7 @@ class bbg():
                 for i in config:print(C.LIGHTMAGENTA_EX+i,C.RED+'-'+C.MAGENTA,config[i])
         except Exception as e:
             print(C.RED+"Exception as read config.json --",e)
-            sys.exit(0)
+            return
 
         self._log_('Program started!')
         asyncio.get_event_loop().run_until_complete(self.connect_to_account())
