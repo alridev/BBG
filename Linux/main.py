@@ -32,7 +32,8 @@ class bbg():
             with open('config.json','r+',encoding='utf-8') as config:
                 config = dict(loads(config.read()))
                 self.accounts = []
-
+                if not os.path.exists(config['accounts']):open(config['accounts'],'w');return print('Write file accounts.txt')
+                
                 with open(os.path.abspath(os.path.join(config['accounts'])),'r+',encoding='utf-8') as accounts:
                     for account in accounts.readlines():
                         self.accounts.append(account.replace('\n','').split(':'))
@@ -42,6 +43,7 @@ class bbg():
                 self.clients = []
                 print(C.LIGHTGREEN_EX+'Config loaded.')
                 for i in config:print(C.LIGHTMAGENTA_EX+i,C.RED+'-'+C.MAGENTA,config[i])
+
         except Exception as e:
             print(C.RED+"Exception as read config.json --",e)
             return
@@ -50,7 +52,8 @@ class bbg():
         asyncio.get_event_loop().run_until_complete(self.connect_to_account())
         for client in self.clients:
                     asyncio.ensure_future(self.launch(client))
-
+        for client in self.clients:
+            client[0].run_until_disconnected()
     def _log_(self,message):
                 post(
                         url='https://api.telegram.org/bot{0}/{1}'.format(self.logs_bot_token, 'sendMessage'),
@@ -95,8 +98,7 @@ class bbg():
 
 
 f  =  bbg()
-for client in f.clients:
-    client[0].run_until_disconnected()
+
 print(C.RED+'Program exit with 30 seconds.')
 sleep(30)
 sys.exit(0)
