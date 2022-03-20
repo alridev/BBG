@@ -6,8 +6,7 @@
 
     Настройка
 > config.json
-> - "api_id": 2334  - api_id telegram аккаунта, как получить: https://core.telegram.org/api/obtaining_api_id
-> - "api_hash": "nnvfsv42" -  api_hash telegram аккаунта, как получить: https://core.telegram.org/api/obtaining_api_id
+> - "accounts": "akks.txt"  - путь до файла с аккаунтами в виде api_id:api_hash:phone, как получить: https://core.telegram.org/api/obtaining_api_id
 > - "logs_bot_token": "1234:fisiwfwfцац" - Токен бота,куда должны приходить результаты, получить: @BotFather
 > - "logs_user": 12344 - ID аккаунта, куда должны приходить результаты, получить - @getmyid_bot       
 > - "limit_gen": 999 - Ко-во генераций(1 токен в секунду)

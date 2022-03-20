@@ -1,8 +1,7 @@
 {
-    "api_id": 123,
-    "api_hash": "",
+    "accounts": "",
     "logs_bot_token": "",
-    "logs_user": 123,
+    "logs_user": 1234,
     "limit_gen": 99
 }
 
