@@ -11,7 +11,7 @@ from time import sleep,time
 from telethon.errors.rpcerrorlist import FloodWaitError
 C = Fore
 init()
-system('clear')
+system('cls')
 bb =f'''{C.YELLOW}
 $$$$$$$   $$$$$$$    $$$$$$ 
 $$    $$  $$    $$  $$    $$
