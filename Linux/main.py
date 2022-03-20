@@ -32,7 +32,7 @@ class bbg():
             with open('config.json','r+',encoding='utf-8') as config:
                 config = dict(loads(config.read()))
                 self.accounts = []
-                if not os.path.exists(config['accounts']):open(config['accounts'],'w');return print('Write file accounts.txt')
+                if not os.path.exists(config['accounts']):open(os.path.abspath(os.path.join(config['accounts'])),'r+',encoding='utf-8');return print('Write file accounts.txt')
                 
                 with open(os.path.abspath(os.path.join(config['accounts'])),'r+',encoding='utf-8') as accounts:
                     for account in accounts.readlines():
